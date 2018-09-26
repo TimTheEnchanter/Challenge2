@@ -81,6 +81,8 @@ function run_map_plugin() {
 }
 run_map_plugin();
 
+add_action('init', 'custom_map');
+
 function custom_map()
 {
     register_post_type('custom_map',
@@ -89,9 +91,24 @@ function custom_map()
                                'name'          => __('Maps'),
                                'singular_name' => __('Map'),
                            ),
-                           'public'      => true,
-                           'has_archive' => true,
+                           'description' => 'Books which we will be discussing on this blog.',
+  						   'public' => true,
+  						   'menu_position' => 20,
+                           'supports' => array( 'title', 'editor', 'custom-fields' )
                        )
     );
 }
-add_action('init', 'custom_map');
+
+function add_map_box()
+{
+    $screens = ['custom_map'];
+    foreach ($screens as $screen) {
+        add_meta_box(
+            'map_box_id',           // Unique ID
+            'Custom Map Location',  // Box title
+            'custom_map_html',  // Content callback, must be of type callable
+            $screen                   // Post type
+        );
+    }
+}
+add_action('add_meta_boxes', 'add_map_box');
