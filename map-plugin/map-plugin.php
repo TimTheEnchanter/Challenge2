@@ -80,3 +80,18 @@ function run_map_plugin() {
 
 }
 run_map_plugin();
+
+function custom_map()
+{
+    register_post_type('custom_map',
+                       array(
+                           'labels'      => array(
+                               'name'          => __('Maps'),
+                               'singular_name' => __('Map'),
+                           ),
+                           'public'      => true,
+                           'has_archive' => true,
+                       )
+    );
+}
+add_action('init', 'custom_map');
