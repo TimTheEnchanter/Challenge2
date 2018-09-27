@@ -91,7 +91,7 @@ function custom_map()
                                'name'          => __('Maps'),
                                'singular_name' => __('Map'),
                            ),
-                           'description' => 'Books which we will be discussing on this blog.',
+                           'description' => 'Custom Maps.',
   						   'public' => true,
   						   'menu_position' => 20,
                            'supports' => array( 'title', 'editor', 'custom-fields' )
@@ -161,4 +161,29 @@ acf_add_local_field_group(array(
 ));
 
 }
+}
+
+add_shortcode('map_q', 'map_shortcode_query');
+function map_shortcode_query($atts, $content){
+  extract(shortcode_atts(array( 
+   'posts_per_page' => '1',
+   'post_type' => 'custom_map',
+   'caller_get_posts' => 1)
+   , $atts));
+
+  global $post;
+
+  $posts = new WP_Query($atts);
+  $output = '';
+    if ($posts->have_posts())
+        while ($posts->have_posts()):
+            $posts->the_post();
+            $out = get_the_content();
+            
+    endwhile;
+  else
+    return; // no posts found
+
+  wp_reset_query();
+  return html_entity_decode($out);
 }
