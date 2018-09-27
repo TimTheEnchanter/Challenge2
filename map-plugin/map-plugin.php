@@ -112,3 +112,53 @@ function add_map_box()
     }
 }
 add_action('add_meta_boxes', 'add_map_box');
+
+function custom_map_html($post)
+{
+if( function_exists('acf_add_local_field_group') 
+{
+
+acf_add_local_field_group(array(
+	'key' => 'group_5bac60d2bff48',
+	'title' => 'map',
+	'fields' => array(
+		array(
+			'key' => 'field_5bad01533d4a1',
+			'label' => 'Map',
+			'name' => 'map-selector',
+			'type' => 'google_map',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'center_lat' => '',
+			'center_lng' => '',
+			'zoom' => '',
+			'height' => '',
+		),
+	),
+	'location' => array(
+		array(
+			array(
+				'param' => 'post_type',
+				'operator' => '==',
+				'value' => 'post',
+			),
+		),
+	),
+	'menu_order' => 0,
+	'position' => 'normal',
+	'style' => 'default',
+	'label_placement' => 'top',
+	'instruction_placement' => 'label',
+	'hide_on_screen' => '',
+	'active' => 1,
+	'description' => '',
+));
+
+}
+}
