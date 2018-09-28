@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * @link              www.jameswebdesign.ca
- * @since             1.0.0
+ * @since             1.0.3
  * @package           Map_Plugin
  *
  * @wordpress-plugin
@@ -115,8 +115,8 @@ add_action('add_meta_boxes', 'add_map_box');
 
 function custom_map_html($post)
 {
-if( function_exists('acf_add_local_field_group') )
-{
+	//echo "Test";
+
 
 acf_add_local_field_group(array(
 	'key' => 'group_5bac60d2bff48',
@@ -160,7 +160,7 @@ acf_add_local_field_group(array(
 	'description' => '',
 ));
 
-}}
+}
 
 
 add_shortcode('map_q', 'map_shortcode_query');
