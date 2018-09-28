@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              www.jameswebdesign.ca
- * @since             1.0.3
+ * @since             1.1.1
  * @package           Map_Plugin
  *
  * @wordpress-plugin
  * Plugin Name:       Map Plugin
  * Plugin URI:        www.jameswebdesign.ca
  * Description:       This plugin should allow you to create a custom map. Shortcode is [map_q p=MAP_POST_ID]
- * Version:           1.0.4
+ * Version:           1.1.1
  * Author:            James Parrott
  * Author URI:        www.jameswebdesign.ca
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.0.4' );
+define( 'PLUGIN_NAME_VERSION', '1.1.1' );
 
 /**
  * The code that runs during plugin activation.
@@ -139,8 +139,8 @@ add_action('admin_print_styles-post.php', 'custom_js_css');
 add_action('admin_print_styles-post-new.php', 'custom_js_css');
 function custom_js_css() {
 	global $post;
-    wp_enqueue_style('gmaps-meta-box', '/js/gmaps/style.css');
-    wp_enqueue_script('gmaps-meta-box', '/js/gmaps/maps.js');
+    wp_enqueue_style('gmaps-meta-box', '/wp-content/plugins/map-plugin/js/gmaps/style.css');
+    wp_enqueue_script('gmaps-meta-box', '/wp-content/plugins/map-plugin/js/gmaps/maps.js');
     $helper = array(
     	'lat' => get_post_meta($post->ID,'lat',true),
     	'lng' => get_post_meta($post->ID,'lng',true)
