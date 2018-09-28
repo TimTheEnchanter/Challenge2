@@ -16,7 +16,7 @@
  * Plugin Name:       Map Plugin
  * Plugin URI:        www.jameswebdesign.ca
  * Description:       This plugin should allow you to create a custom map. Shortcode is [map_q p=MAP_POST_ID]
- * Version:           1.0.0
+ * Version:           1.0.4
  * Author:            James Parrott
  * Author URI:        www.jameswebdesign.ca
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.0.0' );
+define( 'PLUGIN_NAME_VERSION', '1.0.4' );
 
 /**
  * The code that runs during plugin activation.
@@ -107,61 +107,78 @@ function add_map_box()
             'map_box_id',           // Unique ID
             'Custom Map Location',  // Box title
             'custom_map_html',  // Content callback, must be of type callable
-            $screen                   // Post type
+            $screen,                   // Post type
+            'normal', // $context
+        	'high'  // $priority
         );
     }
+
+    wp_nonce_field( 'location_map_nonce_action', 'location_map_nonce' );
 }
 add_action('add_meta_boxes', 'add_map_box');
 
 function custom_map_html($post)
 {
 	//echo "Test";
+	global $post;  
+	$lat = get_post_meta($post->ID, 'lat', true);  
+	$lng = get_post_meta($post->ID, 'lng', true); 
+	$nonce = wp_create_nonce(basename(__FILE__));
 
+	?>
+	<div class="maparea" id="map-canvas"></div>
+	<input type="hidden" name="glat" id="latitude" value="<?php echo $lat; ?>">
+	<input type="hidden" name="glng" id="longitude" value="<?php echo $lng; ?>">
+	<input type="hidden" name="custom_meta_box_nonce" value="<?php echo $nonce; ?>">  
+	<?php
 
-acf_add_local_field_group(array(
-	'key' => 'group_5bac60d2bff48',
-	'title' => 'map',
-	'fields' => array(
-		array(
-			'key' => 'field_5bad01533d4a1',
-			'label' => 'Map',
-			'name' => 'map-selector',
-			'type' => 'google_map',
-			'instructions' => '',
-			'required' => 1,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '',
-				'class' => '',
-				'id' => '',
-			),
-			'center_lat' => '',
-			'center_lng' => '',
-			'zoom' => '',
-			'height' => '',
-		),
-	),
-	'location' => array(
-		array(
-			array(
-				'param' => 'post_type',
-				'operator' => '==',
-				'value' => 'post',
-			),
-		),
-	),
-	'menu_order' => 0,
-	'position' => 'normal',
-	'style' => 'default',
-	'label_placement' => 'top',
-	'instruction_placement' => 'label',
-	'hide_on_screen' => '',
-	'active' => 1,
-	'description' => '',
-));
 
 }
 
+add_action('admin_print_styles-post.php', 'custom_js_css');
+add_action('admin_print_styles-post-new.php', 'custom_js_css');
+function custom_js_css() {
+	global $post;
+    wp_enqueue_style('gmaps-meta-box', get_stylesheet_directory_uri() . '/js/gmaps/style.css');
+    wp_enqueue_script('gmaps-meta-box', get_stylesheet_directory_uri() . '/js/gmaps/maps.js');
+    $helper = array(
+    	'lat' => get_post_meta($post->ID,'lat',true),
+    	'lng' => get_post_meta($post->ID,'lng',true)
+    );
+    wp_localize_script('gmaps-meta-box','helper',$helper);
+}
+
+function save_embed_gmap($post_id) {   
+    // verify nonce
+    if (!wp_verify_nonce($_POST['custom_meta_box_nonce'], basename(__FILE__)))
+        return $post_id;
+        
+    // check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return $post_id;
+        
+    // check permissions
+    if ('page' == $_POST['post_type']) {
+        if (!current_user_can('edit_page', $post_id))
+            return $post_id;
+        } elseif (!current_user_can('edit_post', $post_id)) {
+            return $post_id;
+    }  
+    
+    $oldlat = get_post_meta($post_id, "lat", true);
+    
+    $newlat = $_POST["glat"]; 
+    if ($newlat != $oldlat) {
+        update_post_meta($post_id, "lat", $newlat);
+    } 
+    $oldlng = get_post_meta($post_id, "lng", true);
+    
+    $newlng = $_POST["glng"]; 
+    if ($newlng != $oldlng) {
+        update_post_meta($post_id, "lng", $newlng);
+    } 
+}
+add_action('save_post', 'save_embed_gmap');
 
 add_shortcode('map_q', 'map_shortcode_query');
 function map_shortcode_query($atts, $content){
@@ -187,3 +204,9 @@ function map_shortcode_query($atts, $content){
   wp_reset_query();
   return html_entity_decode($out);
 }
+
+function wp_google_scripts() {
+	$API_KEY = "AIzaSyAj1hqhXwaUnJDZzisebduqKg2QFsCYCS4";
+	wp_enqueue_script( 'google-maps-native', "http://maps.googleapis.com/maps/api/js?key=".$API_KEY);
+}
+add_action( 'admin_enqueue_scripts', 'wp_google_scripts' );
