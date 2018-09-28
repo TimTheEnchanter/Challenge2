@@ -139,8 +139,8 @@ add_action('admin_print_styles-post.php', 'custom_js_css');
 add_action('admin_print_styles-post-new.php', 'custom_js_css');
 function custom_js_css() {
 	global $post;
-    wp_enqueue_style('gmaps-meta-box', get_stylesheet_directory_uri() . '/js/gmaps/style.css');
-    wp_enqueue_script('gmaps-meta-box', get_stylesheet_directory_uri() . '/js/gmaps/maps.js');
+    wp_enqueue_style('gmaps-meta-box', '/js/gmaps/style.css');
+    wp_enqueue_script('gmaps-meta-box', '/js/gmaps/maps.js');
     $helper = array(
     	'lat' => get_post_meta($post->ID,'lat',true),
     	'lng' => get_post_meta($post->ID,'lng',true)
