@@ -115,7 +115,7 @@ add_action('add_meta_boxes', 'add_map_box');
 
 function custom_map_html($post)
 {
-if( function_exists('acf_add_local_field_group') 
+if( function_exists('acf_add_local_field_group') )
 {
 
 acf_add_local_field_group(array(
@@ -160,7 +160,7 @@ acf_add_local_field_group(array(
 	'description' => '',
 ));
 
-}
+}}
 
 
 add_shortcode('map_q', 'map_shortcode_query');
