@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Map Plugin
  * Plugin URI:        www.jameswebdesign.ca
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin should allow you to create a custom map. Shortcode is [map_q p=MAP_POST_ID]
  * Version:           1.0.0
  * Author:            James Parrott
  * Author URI:        www.jameswebdesign.ca
@@ -161,7 +161,7 @@ acf_add_local_field_group(array(
 ));
 
 }
-}
+
 
 add_shortcode('map_q', 'map_shortcode_query');
 function map_shortcode_query($atts, $content){
