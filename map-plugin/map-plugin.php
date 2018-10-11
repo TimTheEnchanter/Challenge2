@@ -206,7 +206,7 @@ function map_shortcode_query($atts, $content){
 }
 
 function wp_google_scripts() {
-	$API_KEY = "AIzaSyCoaabRTTKFpJLEqNFle3OVae2tq-X7BEk";
+	$API_KEY = "AIzaSyAXckDHRDX0nSzz8kUL99yKVD5bsGF6oIA";
 	wp_enqueue_script( 'google-maps-native', "http://maps.googleapis.com/maps/api/js?key=".$API_KEY);
 }
 add_action( 'admin_enqueue_scripts', 'wp_google_scripts' );
